@@ -22,6 +22,49 @@
         </div>
     </main>
 
+    <!-- Modal Chi Tiết Sản Phẩm -->
+    <div id="product-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="modal-close" id="modal-close">&times;</button>
+            <div class="modal-body">
+                <div class="modal-image">
+                    <img id="modal-image" src="" alt="">
+                </div>
+                <div class="modal-details">
+                    <h2 id="modal-title"></h2>
+                    <div class="modal-category" id="modal-category"></div>
+                    <p class="modal-description" id="modal-description"></p>
+                    <div class="modal-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">Giá:</span>
+                            <span class="meta-value" id="modal-price"></span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Slug:</span>
+                            <span class="meta-value" id="modal-slug"></span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">ID:</span>
+                            <span class="meta-value" id="modal-id"></span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Tạo:</span>
+                            <span class="meta-value" id="modal-created"></span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Cập nhật:</span>
+                            <span class="meta-value" id="modal-updated"></span>
+                        </div>
+                    </div>
+                    <div class="modal-images">
+                        <h3>Hình ảnh sản phẩm:</h3>
+                        <div id="modal-images-list" class="images-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <p>&copy; 2024 Demo Shop API</p>
     </footer>

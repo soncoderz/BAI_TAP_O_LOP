@@ -3,34 +3,43 @@ document.addEventListener('DOMContentLoaded', () => {
     const productList = document.getElementById('product-list');
     const loadingElement = document.getElementById('loading');
     const errorElement = document.getElementById('error-message');
+    const modal = document.getElementById('product-modal');
+    const modalClose = document.getElementById('modal-close');
+
+    // Hàm xử lý URL ảnh
+    function cleanImageUrl(imageUrl) {
+        if (!imageUrl) return 'https://placehold.co/600x400?text=No+Image';
+        
+        let cleanUrl = imageUrl;
+        if (cleanUrl.startsWith('["') && cleanUrl.endsWith('"]')) {
+            try {
+                cleanUrl = JSON.parse(cleanUrl)[0];
+            } catch (e) {}
+        }
+        if (cleanUrl.startsWith('[') && cleanUrl.endsWith(']')) {
+            cleanUrl = cleanUrl.slice(2, -2);
+        }
+        return cleanUrl || 'https://placehold.co/600x400?text=No+Image';
+    }
 
     // Hàm gọi API
     async function fetchProducts() {
         try {
-            // Hiển thị loading
             loadingElement.classList.remove('hidden');
             
-            // Gọi API (Lấy 20 sản phẩm đầu tiên để demo cho nhanh)
-            // Chúng ta có thể dùng parameter ?offset=0&limit=20 nếu API hỗ trợ, 
-            // nhưng ở đây ta gọi link gốc như yêu cầu và xử lý mảng trả về.
             const response = await fetch(API_URL);
-
             if (!response.ok) {
                 throw new Error(`Lỗi HTTP: ${response.status}`);
             }
 
             const data = await response.json();
-
-            // Ẩn loading
             loadingElement.classList.add('hidden');
 
-            // Kiểm tra dữ liệu
             if (!Array.isArray(data) || data.length === 0) {
                 showError('Không tìm thấy sản phẩm nào.');
                 return;
             }
 
-            // Hiển thị sản phẩm (Lấy tối đa 20 sản phẩm mới nhất)
             renderProducts(data.slice(0, 20));
 
         } catch (error) {
@@ -40,47 +49,86 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Hàm hiển thị sản phẩm ra HTML
+    // Hàm hiển thị sản phẩm
     function renderProducts(products) {
-        productList.innerHTML = ''; // Xóa nội dung cũ
+        productList.innerHTML = '';
         productList.classList.remove('hidden');
 
         products.forEach(product => {
             const card = document.createElement('div');
             card.className = 'product-card';
+            card.style.cursor = 'pointer';
 
-            // Xử lý ảnh: lấy ảnh đầu tiên hoặc ảnh mặc định nếu lỗi
-            // API này trả về mảng images, đôi khi là chuỗi JSON stringify bị lỗi, cần clean nếu cần thiết
-            // Nhưng để đơn giản ta lấy phần tử đầu tiên.
-            let imageUrl = 'https://placehold.co/600x400?text=No+Image';
-            if (product.images && product.images.length > 0) {
-                // Một số dữ liệu từ API này bị lỗi format ["[\"url\"]"], ta cứ lấy raw trước
-                // Cải thiện: check clean URL
-                let cleanUrl = product.images[0];
-                if (cleanUrl.startsWith('["') && cleanUrl.endsWith('"]')) {
-                     try {
-                        cleanUrl = JSON.parse(cleanUrl)[0];
-                     } catch (e) {}
-                }
-                // Xử lý trường hợp ảnh bị ngoặc vuông bao quanh chuỗi (lỗi dữ liệu phổ biến ở API này)
-                if (cleanUrl.startsWith('[') && cleanUrl.endsWith(']')) {
-                    cleanUrl = cleanUrl.slice(2, -2);
-                }
-                imageUrl = cleanUrl;
-            }
+            const imageUrl = cleanImageUrl(product.images?.[0]);
+            const price = product.price ? product.price.toLocaleString('vi-VN') : 'N/A';
+            const categoryName = product.category?.name || 'Uncategorized';
 
             card.innerHTML = `
                 <img src="${imageUrl}" alt="${product.title}" class="product-image" onerror="this.src='https://placehold.co/600x400?text=Error+Image'">
                 <div class="product-info">
-                    <div class="product-category">${product.category ? product.category.name : 'Uncategorized'}</div>
+                    <div class="product-category">${categoryName}</div>
                     <h2 class="product-title">${product.title}</h2>
-                    <p class="product-price">$${product.price}</p>
+                    <p class="product-price">$${price}</p>
+                    <button class="btn-details">Xem Chi Tiết</button>
                 </div>
             `;
 
+            card.addEventListener('click', () => showProductDetail(product));
             productList.appendChild(card);
         });
     }
+
+    // Hàm hiển thị chi tiết sản phẩm
+    function showProductDetail(product) {
+        const imageUrl = cleanImageUrl(product.images?.[0]);
+        const createdDate = new Date(product.creationAt).toLocaleDateString('vi-VN');
+        const updatedDate = new Date(product.updatedAt).toLocaleDateString('vi-VN');
+
+        document.getElementById('modal-image').src = imageUrl;
+        document.getElementById('modal-image').onerror = () => {
+            document.getElementById('modal-image').src = 'https://placehold.co/600x400?text=Error+Image';
+        };
+        
+        document.getElementById('modal-title').textContent = product.title;
+        document.getElementById('modal-category').textContent = `Danh mục: ${product.category?.name || 'N/A'}`;
+        document.getElementById('modal-description').textContent = product.description || 'Không có mô tả';
+        document.getElementById('modal-price').textContent = `$${product.price.toLocaleString('vi-VN')}`;
+        document.getElementById('modal-slug').textContent = product.slug || 'N/A';
+        document.getElementById('modal-id').textContent = product.id;
+        document.getElementById('modal-created').textContent = createdDate;
+        document.getElementById('modal-updated').textContent = updatedDate;
+
+        // Hiển thị danh sách ảnh
+        const imagesList = document.getElementById('modal-images-list');
+        imagesList.innerHTML = '';
+        if (product.images && product.images.length > 0) {
+            product.images.forEach((img, index) => {
+                const cleanImg = cleanImageUrl(img);
+                const imgElement = document.createElement('img');
+                imgElement.src = cleanImg;
+                imgElement.alt = `Ảnh ${index + 1}`;
+                imgElement.className = 'thumbnail';
+                imgElement.onerror = () => {
+                    imgElement.src = 'https://placehold.co/600x400?text=Error';
+                };
+                imagesList.appendChild(imgElement);
+            });
+        } else {
+            imagesList.innerHTML = '<p>Không có ảnh nào</p>';
+        }
+
+        modal.classList.remove('hidden');
+    }
+
+    // Đóng modal
+    function closeModal() {
+        modal.classList.add('hidden');
+    }
+
+    modalClose.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
 
     // Hàm hiển thị lỗi
     function showError(message) {
@@ -88,6 +136,5 @@ document.addEventListener('DOMContentLoaded', () => {
         errorElement.classList.remove('hidden');
     }
 
-    // Bắt đầu gọi hàm
     fetchProducts();
 });
