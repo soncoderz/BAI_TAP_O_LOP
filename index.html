@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh Sách Sản Phẩm</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Cửa Hàng Trực Tuyến By trinh cong son </h1>
+            <p>Sản phẩm mới nhất từ API</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <div id="loading" class="loading">Đang tải dữ liệu...</div>
+        <div id="error-message" class="error hidden"></div>
+        <div id="product-list" class="product-grid hidden">
+            <!-- Sản phẩm sẽ được thêm vào đây bằng JS -->
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Demo Shop API</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
