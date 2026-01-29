@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Hàm hiển thị lỗi
     function showError(message) {
-        errorElement.textContent = message;
+        errorElement.innerHTML = `<span class="error-icon">⚠️</span><p>${message}</p>`;
         errorElement.classList.remove('hidden');
     }
 

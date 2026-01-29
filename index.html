@@ -9,64 +9,82 @@
 <body>
     <header>
         <div class="container">
-            <h1>Cửa Hàng Trực Tuyến By trinh cong son </h1>
-            <p>Sản phẩm mới nhất từ API</p>
+            <div class="header-content">
+                <h1><span class="header-icon">🛍️</span> Cửa Hàng Trực Tuyến</h1>
+                <p class="header-subtitle">Khám phá sản phẩm mới nhất từ API</p>
+                <div class="header-badge">by Trịnh Công Sơn</div>
+            </div>
         </div>
     </header>
 
     <main class="container">
-        <div id="loading" class="loading">Đang tải dữ liệu...</div>
-        <div id="error-message" class="error hidden"></div>
-        <div id="product-list" class="product-grid hidden">
-            <!-- Sản phẩm sẽ được thêm vào đây bằng JS -->
-        </div>
+        <section class="products-section">
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p>Đang tải dữ liệu...</p>
+            </div>
+            <div id="error-message" class="error hidden">
+                <span class="error-icon">⚠️</span>
+                <p></p>
+            </div>
+            <div id="product-list" class="product-grid hidden">
+                <!-- Sản phẩm sẽ được thêm vào đây bằng JS -->
+            </div>
+        </section>
     </main>
 
     <!-- Modal Chi Tiết Sản Phẩm -->
-    <div id="product-modal" class="modal hidden">
+    <div id="product-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
         <div class="modal-content">
-            <button class="modal-close" id="modal-close">&times;</button>
+            <button class="modal-close" id="modal-close" aria-label="Đóng modal" title="Đóng">
+                <span aria-hidden="true">&times;</span>
+            </button>
             <div class="modal-body">
-                <div class="modal-image">
-                    <img id="modal-image" src="" alt="">
-                </div>
+                <figure class="modal-image">
+                    <img id="modal-image" src="" alt="Hình ảnh sản phẩm">
+                </figure>
                 <div class="modal-details">
-                    <h2 id="modal-title"></h2>
-                    <div class="modal-category" id="modal-category"></div>
+                    <header class="modal-header">
+                        <h2 id="modal-title"></h2>
+                        <span class="modal-category" id="modal-category"></span>
+                    </header>
                     <p class="modal-description" id="modal-description"></p>
-                    <div class="modal-meta">
+                    <section class="modal-meta" aria-label="Thông tin sản phẩm">
                         <div class="meta-item">
-                            <span class="meta-label">Giá:</span>
+                            <span class="meta-label">💰 Giá:</span>
                             <span class="meta-value" id="modal-price"></span>
                         </div>
                         <div class="meta-item">
-                            <span class="meta-label">Slug:</span>
+                            <span class="meta-label">🔗 Slug:</span>
                             <span class="meta-value" id="modal-slug"></span>
                         </div>
                         <div class="meta-item">
-                            <span class="meta-label">ID:</span>
+                            <span class="meta-label">🆔 ID:</span>
                             <span class="meta-value" id="modal-id"></span>
                         </div>
                         <div class="meta-item">
-                            <span class="meta-label">Tạo:</span>
+                            <span class="meta-label">📅 Tạo:</span>
                             <span class="meta-value" id="modal-created"></span>
                         </div>
                         <div class="meta-item">
-                            <span class="meta-label">Cập nhật:</span>
+                            <span class="meta-label">✏️ Cập nhật:</span>
                             <span class="meta-value" id="modal-updated"></span>
                         </div>
-                    </div>
-                    <div class="modal-images">
-                        <h3>Hình ảnh sản phẩm:</h3>
+                    </section>
+                    <aside class="modal-images" aria-label="Thư viện ảnh">
+                        <h3>📸 Hình ảnh sản phẩm:</h3>
                         <div id="modal-images-list" class="images-list"></div>
-                    </div>
+                    </aside>
                 </div>
             </div>
         </div>
     </div>
 
     <footer>
-        <p>&copy; 2024 Demo Shop API</p>
+        <div class="footer-content">
+            <p>&copy; 2024 Demo Shop API</p>
+            <p class="footer-credit">✨ Thiết kế hiện đại và thân thiện</p>
+        </div>
     </footer>
 
     <script src="script.js"></script>
